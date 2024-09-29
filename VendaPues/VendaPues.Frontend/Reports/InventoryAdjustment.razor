@@ -1,0 +1,70 @@
+﻿@page "/report_InventoryAdjustment"
+
+@if (loading)
+{
+    <Loading />
+}
+else
+{
+    <MudCard>
+        <div class="p-2">
+            <MudItem>
+                <MudText Typo="Typo.h5"><i class="bi bi-currency-dollar"></i> Ajuste de inventario</MudText>
+            </MudItem>
+            <MudGrid>
+                <MudItem xs="8">
+                    <MudAutocomplete T="Inventory"
+                                     Label="Inventario"
+                                     Placeholder="--Seleccione un inventario--"
+                                     SearchFunc="SearchSupplierAsync"
+                                     Value="selectedInventory"
+                                     ValueChanged="SuplierChanged"
+                                     ToStringFunc="@(e=> e==null?null : $"{e.Name}")">
+                        <ItemTemplate Context="itemContext">
+                            @itemContext.Name
+                        </ItemTemplate>
+                    </MudAutocomplete>
+                </MudItem>
+                <MudItem xs="4" class="d-flex justify-content-end align-items-center">
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="GenerateReportAsync">
+                        Generar Reporte
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </div>
+    </MudCard>
+    @if(showReport)
+    {
+        <MudCard>
+            <MudCardContent>
+                <MudText Typo="Typo.h4">Ajuste de Inventario</MudText>
+                <MudTable Items="inventory!.InventoryDetails" Dense="true" Hover="true" Striped="true">
+                    <HeaderContent>
+                        <MudTh>Producto</MudTh>
+                        <MudTh style="text-align: right;">Costo</MudTh>
+                        <MudTh style="text-align: right;">Stock</MudTh>
+                        <MudTh style="text-align: right;">Ajuste</MudTh>
+                        <MudTh style="text-align: right;">Valor ajuste</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Producto">@context.Product!.Name</MudTd>
+                        <MudTd DataLabel="Costo" style="text-align: right;">@($"{context.Cost:C2}")</MudTd>
+                        <MudTd DataLabel="Stock" style="text-align: right;">@($"{context.Stock:N2}")</MudTd>
+                        <MudTd DataLabel="Ajuste" style="text-align: right;">@($"{context.Adjustment:N2}")</MudTd>
+                        <MudTd DataLabel="Valor ajuste" style="text-align: right;">@($"{context.AdjustmentValue:C2}")</MudTd>
+                    </RowTemplate>
+                    <FooterContent>
+                        <MudTh><b>TOTALES</b></MudTh>
+                        <MudTh style="text-align: right;"></MudTh>
+                        <MudTh style="text-align: right;"></MudTh>
+                        <MudTh style="text-align: right;"><b>@($"{totalQuantity:N2}")</b></MudTh>
+                        <MudTh style="text-align: right;"><b>@($"{totalValue:C2}")</b></MudTh>
+                    </FooterContent>
+                </MudTable>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportToExcel" Class="m-3">
+                    Exportar a Excel
+                </MudButton>
+            </MudCardContent>
+        </MudCard>
+    }
+}

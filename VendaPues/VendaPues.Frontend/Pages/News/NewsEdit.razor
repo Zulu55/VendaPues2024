@@ -1,0 +1,12 @@
+﻿@if (newsArticle is null)
+{
+    <Loading />
+}
+else
+{
+    <MudDialog>
+        <DialogContent>
+            <NewsForm @ref="newsForm" NewsArticle="newsArticle" OnValidSubmit="EditAsync" ReturnAction="Return" IsEdit />
+        </DialogContent>
+    </MudDialog>
+}

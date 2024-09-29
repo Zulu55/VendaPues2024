@@ -1,0 +1,82 @@
+﻿<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"></NavigationLock>
+
+<EditForm EditContext="editContext" OnValidSubmit="OnDataAnnotationsValidatedAsync">
+    <DataAnnotationsValidator />
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-6">
+                <div class="mb-2">
+                    <MudTextField Label="Nombre"
+                                  @bind-Value="@ProductDTO.Name"
+                                  For="@(() => ProductDTO.Name)"
+                                  Class="mb-2" />
+                </div>
+                <div class="mb-2">
+                    <MudTextField Label="Descripción"
+                                  @bind-Value="@ProductDTO.Description"
+                                  For="@(() => ProductDTO.Description)"
+                                  Class="mb-2" />
+                </div>
+                <div class="mb-2">
+                    <MudTextField Label="Precio"
+                                  @bind-Value="@ProductDTO.Price"
+                                  For="@(() => ProductDTO.Price)"
+                                  InputType="InputType.Number"
+                                  Class="mb-2" />
+                </div>
+                <div class="mb-2">
+                    <MudTextField Label="% Utilidad Esperada"
+                                  @bind-Value="@ProductDTO.DesiredProfit"
+                                  For="@(() => ProductDTO.DesiredProfit)"
+                                  InputType="InputType.Number"
+                                  Class="mb-2" />
+                </div>
+                @if (IsEdit)
+                {
+                    <div class="mb-2">
+                        <MudText Typo="Typo.h6" Class="mb-2">@($"Costo: {ProductDTO.Cost:C2}")</MudText>
+                    </div>
+                    <div class="mb-2">
+                        <MudText Typo="Typo.h6" Class="mb-2">@($"Inventario: {ProductDTO.Stock:N2}")</MudText>
+                    </div>
+                }
+            </div>
+            <div class="col-6">
+                <div class="mb-2">
+                    <label>Categorías:</label>
+                    <div>
+                        <MultipleSelector NonSelected="nonSelected" Selected="selected" />
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <InputImg Label="Foto" ImageSelected="ImageSelected" ImageURL="@imageUrl" />
+                </div>
+                @if (IsEdit)
+                {
+                    <div class="mb-2">
+                        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.AddAPhoto" Color="Color.Primary" OnClick="AddImageAction">
+                            Imagén
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="RemoveImageAction">
+                            Imagén
+                        </MudButton>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end">
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.ArrowBack" Color="Color.Info" OnClick="ReturnAction" Class="me-2">
+            Regresar
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary" ButtonType="ButtonType.Submit">
+            Guardar
+        </MudButton>
+    </div>
+</EditForm>
+
+@if (IsEdit && ProductDTO.ProductImages is not null)
+{
+    <CarouselView Images="ProductDTO.ProductImages" />
+}

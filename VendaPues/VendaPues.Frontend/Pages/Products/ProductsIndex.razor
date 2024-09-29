@@ -1,0 +1,63 @@
+﻿@page "/products"
+
+@if (loading)
+{
+    <Loading />
+}
+else
+{
+    <MudTable Items="@Products"
+              @ref="table"
+              ServerData="LoadListAsync"
+              Dense="true"
+              Hover="true"
+              Striped="true"
+              FixedHeader="true"
+              FixedFooter="true">
+        <ToolBarContent>
+            <div class="d-flex justify-content-between">
+                <MudText Typo="Typo.h6" Class="me-4"><i class="bi bi-box2"></i> Productos</MudText>
+                <MudButton Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Add" Color="Color.Info" OnClick="@(() => ShowModalAsync())">Crear</MudButton>
+            </div>
+            <MudSpacer />
+            <FilterComponent ApplyFilter="SetFilterValue" />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Nombre</MudTh>
+            <MudTh>Precio</MudTh>
+            <MudTh>Costo</MudTh>
+            <MudTh>Utilidad Real</MudTh>
+            <MudTh>Utilidad Esperada</MudTh>
+            <MudTh>Inventario</MudTh>
+            <MudTh>Imagén Principal</MudTh>
+            <MudTh>Acciones</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Nombre">@context.Name</MudTd>
+            <MudTd DataLabel="Precio">@($"{context.Price:C2}")</MudTd>
+            <MudTd DataLabel="Costo">@($"{context.Cost:N2}")</MudTd>
+            <MudTd DataLabel="Utilidad Real">@($"{context.RealProfit:P2}")</MudTd>
+            <MudTd DataLabel="Utilidad Esperada">@($"{context.DesiredProfit:P2}")</MudTd>
+            <MudTd DataLabel="Inventario">@($"{context.Stock:N2}")</MudTd>
+            <MudTd DataLabel="Imagén Principal">
+                <img src="@context.MainImage" alt="Imagén Principal" style="max-width: 100px; max-height: 100px;" />
+            </MudTd>
+            <MudTd DataLabel="Acciones">
+                <div style="display: flex; justify-content: center; gap: 10px;">
+                    <MudButton Style="width: 50px;" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Inventory" Color="Color.Info" OnClick="@(() => ShowKArdexModal(context))" />
+                    <MudButton Style="width: 50px;" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="@(() => ShowModalAsync(context.Id, true))" />
+                    <MudButton Style="width: 50px;" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => DeleteAsync(@context))" />
+                </div>
+            </MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No se encontraron registros.</MudText>
+        </NoRecordsContent>
+        <PagerContent>
+            <MudTablePager RowsPerPageString="Numero de Registros:"
+                           PageSizeOptions="pageSizeOptions"
+                           AllItemsText="Todos"
+                           InfoFormat="@infoFormat" />
+        </PagerContent>
+    </MudTable>
+}

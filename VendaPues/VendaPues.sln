@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VendaPues.Shared", "VendaPu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VendaPues.Backend", "VendaPues.Backend\VendaPues.Backend.csproj", "{805DE169-94EF-42EA-B4E1-17E2AE49A13B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VendaPues.Frontend", "VendaPues.Frontend\VendaPues.Frontend.csproj", "{E935594C-F7B3-4BF3-A14B-1A59EC77B9EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{805DE169-94EF-42EA-B4E1-17E2AE49A13B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{805DE169-94EF-42EA-B4E1-17E2AE49A13B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{805DE169-94EF-42EA-B4E1-17E2AE49A13B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E935594C-F7B3-4BF3-A14B-1A59EC77B9EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E935594C-F7B3-4BF3-A14B-1A59EC77B9EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E935594C-F7B3-4BF3-A14B-1A59EC77B9EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E935594C-F7B3-4BF3-A14B-1A59EC77B9EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

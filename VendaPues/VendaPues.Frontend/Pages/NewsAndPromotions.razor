@@ -1,0 +1,28 @@
+﻿@if(loading)
+{
+    <Loading/>
+}
+else
+{
+    <MudPaper Class="p-4 my-4">
+        <MudText Typo="Typo.h4" Align="Align.Center">Noticias & Promociones</MudText>
+    </MudPaper>
+
+    <MudGrid Gutter="true">
+        @foreach (var news in newsArticles!)
+        {
+            <MudItem xs="12" sm="6" md="4">
+                <MudCard Class="mb-4">
+                    <MudCardMedia Image="@news.ImageUrl" Alt="@news.Title" Height="200" />
+                    <MudCardContent>
+                        <MudText Typo="Typo.h5" Bold="true">@news.Title</MudText>
+                        <MudText Typo="Typo.body2">@TruncateContent(news.Summary, 200)</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Visibility" OnClick="@(() => ViewDetails(news))">Leer más</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+}

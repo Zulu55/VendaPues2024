@@ -1,0 +1,103 @@
+﻿@page "/Cart/ShowCart"
+
+<MudCard>
+    <div class="p-2">
+        <MudItem>
+            <MudText Typo="Typo.h5"><i class="bi bi-bag"></i> Carro de Compras</MudText>
+        </MudItem>
+        <MudGrid>
+            <MudItem xs="12" sm="6">
+                <MudCardContent>
+                    <EditForm Model="OrderDTO" OnValidSubmit="ConfirmOrderAsync">
+                        <DataAnnotationsValidator />
+                        <MudTextField Label="Comentarios"
+                                      @bind-Value="@OrderDTO.Remarks"
+                                      For="@(() => OrderDTO.Remarks)"
+                                      Lines="3"
+                                      Class="mb-4" />
+                        <MudText Typo="Typo.h5">Cantidad productos: <strong>@($"{sumQuantity:N2}")</strong></MudText>
+                        <MudText Typo="Typo.h5">Valor: <strong>@($"{sumValue:C2}")</strong></MudText>
+                        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.CheckCircle" Color="Color.Primary" ButtonType="ButtonType.Submit" class="my-3">
+                            Confirmar Pedido
+                        </MudButton>
+                    </EditForm>
+                </MudCardContent>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudCardContent>
+                    <div style="display: flex; align-items: center;">
+                        <div style="flex: 1;">
+                            <MudRadioGroup T="int" @bind-Value="selectedPaymentOption">
+                                <MudRadio T="int" Value=0>Pago contra entrega</MudRadio>
+                                <MudRadio T="int" Value=1>Pago PSE</MudRadio>
+                            </MudRadioGroup>
+                        </div>
+                        <div style="text-align: center;">
+                            <MudImage Src="/images/PSE.png" Alt="PSE" Width="180" />
+                        </div>
+                    </div>
+                    @if(selectedPaymentOption == 1)
+                    {
+                        <MudAutocomplete T="Bank"
+                                         Label="Banco"
+                                         Placeholder="--Seleccione un banco--"
+                                         SearchFunc="SearchBankAsync"
+                                         Value="selectedBank"
+                                         ValueChanged="BankChanged"
+                                         ToStringFunc="@(e=> e==null?null : $"{e.Name}")">
+                            <ItemTemplate Context="itemContext">
+                                @itemContext.Name
+                            </ItemTemplate>
+                        </MudAutocomplete>
+                        <MudTextField Label="Email"
+                                      @bind-Value="@email"
+                                      Class="mb-4" />
+                    }
+                </MudCardContent>
+            </MudItem>
+        </MudGrid>
+
+        @if(loading)
+        {
+            <Loading Label="Verificando aprobación del pago en línea...."/>
+        }
+
+        <MudTable Items="@TemporalOrders"
+                  @ref="table"
+                  ServerData="LoadListAsync"
+                  Dense="true"
+                  Hover="true"
+                  Striped="true"
+                  FixedHeader="true"
+                  FixedFooter="true">
+            <HeaderContent>
+                <MudTh>Nombre</MudTh>
+                <MudTh>Descripción</MudTh>
+                <MudTh>Cantidad</MudTh>
+                <MudTh>Precio</MudTh>
+                <MudTh>Valor</MudTh>
+                <MudTh>Comentarios</MudTh>
+                <MudTh>Imagén</MudTh>
+                <MudTh style="width: 270px;">Acciones</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nombre">@context.Product!.Name</MudTd>
+                <MudTd DataLabel="Descripción">@context.Product!.Description</MudTd>
+                <MudTd DataLabel="Cantidad">@($"{context.Quantity:N2}")</MudTd>
+                <MudTd DataLabel="Precio">@($"{context.Product!.Price:C2}")</MudTd>
+                <MudTd DataLabel="Valor">@($"{context.Value:C2}")</MudTd>
+                <MudTd DataLabel="Comentarios">@context.Remarks</MudTd>
+                <MudTd DataLabel="Imagén">
+                    <img src="@context.Product!.MainImage" alt="Imagén Principal" style="max-width: 100px; max-height: 100px;" />
+                </MudTd>
+                <MudTd DataLabel="Acciones">
+                    <MudButton Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Warning" Href=@($"/Cart/ModifyTemporalOrder/{context.Id}")>Editar</MudButton>
+                    <MudButton Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick=@(() => DeleteAsync(@context.Id))>Eliminar</MudButton>
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>No se encontraron registros.</MudText>
+            </NoRecordsContent>
+        </MudTable>
+    </div>
+</MudCard>

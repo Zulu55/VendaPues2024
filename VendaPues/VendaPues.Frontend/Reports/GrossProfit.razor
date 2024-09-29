@@ -1,0 +1,76 @@
+﻿@page "/report_GrossProfit"
+
+@if (loading)
+{
+    <Loading />
+}
+else
+{
+    <MudCard>
+        <div class="p-2">
+            <MudItem>
+                <MudText Typo="Typo.h5"><i class="bi bi-currency-dollar"></i> Utilidad Bruta</MudText>
+            </MudItem>
+            <MudGrid>
+                <MudItem xs="4">
+                    <MudDatePicker Label="Fecha inicial" Date="@initialDate" DateChanged="OnInitialDateChange" />
+                </MudItem>
+                <MudItem xs="4">
+                    <MudDatePicker Label="Fecha final" Date="@finalDate" DateChanged="OnFinalDateChange" />
+                </MudItem>
+                <MudItem xs="4" class="d-flex justify-content-end align-items-center">
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="GenerateReportAsync">
+                        Generar Reporte
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </div>
+    </MudCard>
+    @if (showReport)
+    {
+        <MudCard>
+            <MudCardContent>
+                <MudText Typo="Typo.h4">Utilidad Bruta</MudText>
+                <MudTable Items="reports" Dense="true" Hover="true" Striped="true">
+                    <HeaderContent>
+                        <MudTh>Fecha</MudTh>
+                        <MudTh>Usuario</MudTh>
+                        <MudTh>Status</MudTh>
+                        <MudTh>Tipo</MudTh>
+                        <MudTh>Producto</MudTh>
+                        <MudTh style="text-align: right;">Costo</MudTh>
+                        <MudTh style="text-align: right;">Cantidad</MudTh>
+                        <MudTh style="text-align: right;">Valor</MudTh>
+                        <MudTh style="text-align: right;">Utilidad</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Fecha">@($"{context.Date:yyyy/MM/dd}")</MudTd>
+                        <MudTd DataLabel="Usuario">@context.User!.FullName</MudTd>
+                        <MudTd DataLabel="Status">@EnumHelper.GetEnumDescription(context.OrderStatus)</MudTd>
+                        <MudTd DataLabel="Tipo">@EnumHelper.GetEnumDescription(context.OrderType)</MudTd>
+                        <MudTd DataLabel="Producto">@context.Name</MudTd>
+                        <MudTd DataLabel="Costo" style="text-align: right;">@($"{context.Product!.Cost:C2}")</MudTd>
+                        <MudTd DataLabel="Cantidad" style="text-align: right;">@($"{context.Quantity:N2}")</MudTd>
+                        <MudTd DataLabel="Valor" style="text-align: right;">@($"{context.Value:C2}")</MudTd>
+                        <MudTd DataLabel="Utilidad" style="text-align: right;">@($"{context.Profit:C2}")</MudTd>
+                    </RowTemplate>
+                    <FooterContent>
+                        <MudTh><b>TOTALES</b></MudTh>
+                        <MudTh style="text-align: right;"></MudTh>
+                        <MudTh style="text-align: right;"></MudTh>
+                        <MudTh style="text-align: right;"></MudTh>
+                        <MudTh style="text-align: right;"></MudTh>
+                        <MudTh style="text-align: right;"></MudTh>
+                        <MudTh style="text-align: right;"><b>@($"{totalQuantity:N2}")</b></MudTh>
+                        <MudTh style="text-align: right;"><b>@($"{totalValue:C2}")</b></MudTh>
+                        <MudTh style="text-align: right;"><b>@($"{totalProfit:C2}")</b></MudTh>
+                    </FooterContent>
+                </MudTable>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportToExcel" Class="m-3">
+                    Exportar a Excel
+                </MudButton>
+            </MudCardContent>
+        </MudCard>
+    }
+}
+

@@ -1,0 +1,64 @@
+﻿@if (Products is null)
+{
+    <Loading />
+}
+else
+{
+    @if (Categories != null)
+    {
+        <div class="d-flex flex-wrap justify-content-center  mb-4 mt-2">
+            @foreach (var category in Categories)
+            {
+                <a class="btn btn-link" style="cursor: pointer" @onclick=@(() => LoadAsync(1, category.Name))>@category.Name</a>
+            }
+            <a class="btn btn-link" style="cursor: pointer" @onclick=@(() => LoadAsync(1, allCategories))>Todos</a>
+        </div>
+    }
+
+    <div class="d-flex align-items-center justify-content-between">
+        <FilterComponent ApplyFilter=@FilterCallBack />
+        <AuthorizeView>
+            <Authorized>
+                @if (counter > 0)
+                {
+                    <a href="/Cart/ShowCart" class="btn btn-primary"><i class="bi bi-cart-fill" /> Ver Carro de Compras (@counter)</a>
+                }
+            </Authorized>
+        </AuthorizeView>
+    </div>
+
+    @if (Products.Count > 0)
+    {
+        <div class="row row-cols-1 row-cols-md-4 g-4 mt-1 mb-5">
+            @foreach (var product in Products!)
+            {
+                <div class="col">
+                    <MudCard class="card h-100">
+                        <div class="text-center zoom">
+                            <img src="@product.MainImage" style="height:150px; max-width:200px;" class="text-center" alt=@product.Name />
+                        </div>
+                        <div class="card-body">
+                            <MudText Typo="Typo.h5" class="card-title text-navy">@product.Name</MudText>
+                            <MudText class="card-text smfnt">@product.Description</MudText>
+                            <h5 class="text-muted">@($"{product.Price:C2}")</h5>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="/products/details/@product.Id" class="btn btn-sm btn-secondary"><i class="bi bi-info-circle" /> Detalles</a>
+                            <button class="btn btn-sm btn-primary" @onclick=@(() => AddToCartAsync(product.Id))><i class="bi bi-cart-plus" /> Agregar al Carro</button>
+                        </div>
+                    </MudCard>
+                </div>
+            }
+        </div>
+
+        <MudItem Class="d-flex justify-content-center pb-4">
+            <MudPagination Color="Color.Primary" Count="totalPages" SelectedChanged="LoadListAsync" />
+        </MudItem>
+    }
+    else
+    {
+        <div class="d-flex justify-content-center align-items-center" style="height: 30vh;">
+            <h1>Lo siento, no hay productos con estos criterios de búsqueda</h1>
+        </div>
+    }
+}

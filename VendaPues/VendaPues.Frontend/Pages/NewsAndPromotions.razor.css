@@ -1,0 +1,32 @@
+﻿.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid lightgray;
+    box-shadow: 2px 2px 8px 4px #d3d3d3d1;
+    border-radius: 15px;
+    font-family: sans-serif;
+    margin: 5px;
+}
+
+.card-title.text-navy {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.card-text.smfnt {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.mud-card {
+    transition: transform 0.2s;
+}
+
+    .mud-card:hover {
+        transform: scale(1.05);
+    }

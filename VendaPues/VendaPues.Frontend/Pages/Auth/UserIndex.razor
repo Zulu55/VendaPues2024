@@ -1,0 +1,57 @@
+﻿@page "/users"
+
+@if (loading)
+{
+    <Loading />
+}
+else
+{
+    <MudTable Items="@Users"
+              @ref="table"
+              ServerData="LoadListAsync"
+              Dense="true"
+              Hover="true"
+              Striped="true"
+              FixedHeader="true"
+              FixedFooter="true">
+        <ToolBarContent>
+            <div class="d-flex justify-content-between">
+                <MudText Typo="Typo.h6" Class="me-4"><i class="bi bi-people"></i> Usuarios</MudText>
+                <MudButton Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Add" Color="Color.Info" Href="/register/?IsAdmin=true">Adicionar Administrador</MudButton>
+            </div>
+            <MudSpacer />
+            <FilterComponent ApplyFilter="SetFilterValue" />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Imagén</MudTh>
+            <MudTh>Usuario</MudTh>
+            <MudTh>Documento</MudTh>
+            <MudTh>Teléfono</MudTh>
+            <MudTh>Email</MudTh>
+            <MudTh>Dirección</MudTh>
+            <MudTh>Confirmado</MudTh>
+            <MudTh>Tipo Usuario</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Imagén">
+                <img src="@context.Photo" width="80" height="80" style="border-radius:50%" />
+            </MudTd>
+            <MudTd DataLabel="Usuario">@context.FullName</MudTd>
+            <MudTd DataLabel="Documento">@context.Document</MudTd>
+            <MudTd DataLabel="Teléfono">@context.PhoneNumber</MudTd>
+            <MudTd DataLabel="Email">@context.Email</MudTd>
+            <MudTd DataLabel="Dirección">@context.Address, @context.City!.Name, @context.City!.State!.Name, @context.City!.State!.Country!.Name</MudTd>
+            <MudTd DataLabel="Confirmado">@context.EmailConfirmed</MudTd>
+            <MudTd DataLabel="Tipo Usuario">@EnumHelper.GetEnumDescription(context.UserType)</MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No se encontraron registros.</MudText>
+        </NoRecordsContent>
+        <PagerContent>
+            <MudTablePager RowsPerPageString="Numero de Registros:"
+                           PageSizeOptions="pageSizeOptions"
+                           AllItemsText="Todos"
+                           InfoFormat="@infoFormat" />
+        </PagerContent>
+    </MudTable>
+}

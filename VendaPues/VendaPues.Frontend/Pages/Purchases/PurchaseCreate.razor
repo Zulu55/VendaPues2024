@@ -1,0 +1,116 @@
+﻿<MudDialog>   
+    <DialogContent>
+        <EditForm Model="temporalPurchaseDTO">
+            <DataAnnotationsValidator />
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudCardContent>
+                        <MudDatePicker Label="Fecha" Date="@temporalPurchaseDTO.Date" DateChanged="OnDateChange" />
+                        <ValidationMessage For="@(() => temporalPurchaseDTO.Date)"   />
+                        <MudAutocomplete T="Supplier"
+                                         Label="Proveedor"
+                                         Placeholder="--Seleccione un proveedor--"
+                                         SearchFunc="SearchSupplierAsync"
+                                         Value="selectedSupplier"
+                                         ValueChanged="SuplierChanged"
+                                         ToStringFunc="@(e=> e==null?null : $"{e.SupplierName}")">
+                            <ItemTemplate Context="itemContext">
+                                @itemContext.SupplierName
+                            </ItemTemplate>
+                        </MudAutocomplete>
+                        <MudTextField Label="Comentarios"
+                                      Lines="3"
+                                      @bind-Value="temporalPurchaseDTO.RemarksGeneral"
+                                      For="@(() => temporalPurchaseDTO.RemarksGeneral)" />
+                    </MudCardContent>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudAutocomplete T="Product"
+                                     Label="Producto"
+                                     Placeholder="--Seleccione un producto--"
+                                     SearchFunc="SearchProductAsync"
+                                     Value="selectedProduct"
+                                     ValueChanged="ProductChanged"
+                                     ToStringFunc="@(e=> e==null?null : $"{e.Name}")">
+                        <ItemTemplate Context="itemContext">
+                            @itemContext.Name
+                        </ItemTemplate>
+                    </MudAutocomplete>
+                    <MudTextField Label="Comentarios"
+                                  @bind-Value="temporalPurchaseDTO.RemarksDetail"
+                                  For="@(() => temporalPurchaseDTO.RemarksDetail)" />
+                    <MudTextField Label="Cantidad"
+                                  @bind-Value="temporalPurchaseDTO.Quantity"
+                                  For="@(() => temporalPurchaseDTO.Quantity)"
+                                  InputType="InputType.Number" />
+                    <MudTextField Label="Costo"
+                                  @bind-Value="temporalPurchaseDTO.Cost"
+                                  For="@(() => temporalPurchaseDTO.Cost)"
+                                  InputType="InputType.Number" />
+                </MudItem>
+            </MudGrid>
+            <hr/>
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudStack>
+                        <MudText Typo="Typo.h5">Cantidad: <strong>@($"{sumQuantity:N2}")</strong></MudText>
+                        <MudText Typo="Typo.h5">Costo: <strong>@($"{sumValue:C2}")</strong></MudText>
+                    </MudStack>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudStack>
+                        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Add" Color="Color.Secondary" OnClick="AddProductAsync">
+                            Adicionar Producto
+                        </MudButton>
+                    </MudStack>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+        <hr />
+
+        <MudTable Items="@TemporalPurchases"
+                  @ref="table"
+                  ServerData="LoadListAsync"
+                  Dense="true"
+                  Hover="true"
+                  Striped="true"
+                  FixedHeader="true"
+                  FixedFooter="true">
+            <HeaderContent>
+                <MudTh>Nombre</MudTh>
+                <MudTh>Descripción</MudTh>
+                <MudTh>Cantidad</MudTh>
+                <MudTh>Precio</MudTh>
+                <MudTh>Valor</MudTh>
+                <MudTh></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nombre">@context.Product!.Name</MudTd>
+                <MudTd DataLabel="Descripción">@context.Product!.Description</MudTd>
+                <MudTd DataLabel="Cantidad">@($"{context.Quantity:N2}")</MudTd>
+                <MudTd DataLabel="Costo">@($"{context.Cost:C2}")</MudTd>
+                <MudTd DataLabel="Valor">@($"{context.Value:C2}")</MudTd>
+                <MudTd>
+                    <MudButton Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick=@(() => DeleteAsync(@context.Id))/>
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>No se encontraron registros.</MudText>
+            </NoRecordsContent>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Numero de Registros:"
+                               PageSizeOptions="pageSizeOptions"
+                               AllItemsText="Todos"
+                               InfoFormat="@infoFormat" />
+            </PagerContent>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.ArrowBack" Color="Color.Info" Href="/purchases">
+            Regresar
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary" OnClick="SavePurchaseAsync">
+            Guardar
+        </MudButton>
+    </DialogActions>
+</MudDialog>

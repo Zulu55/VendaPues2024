@@ -1,0 +1,108 @@
+﻿@if (loading)
+{
+    <Loading />
+}
+else
+{
+<MudDialog>   
+    <DialogContent>
+        <div class="row p-2">
+            <div class="col-6">
+                <div class="mb-3">
+                    <label>Fecha:</label>
+                    <div>
+                        <b>@Purchase!.Date</b>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label>Proveedor:</label>
+                    <div>
+                        <b>@Purchase.Supplier!.SupplierName</b>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label>Contacto:</label>
+                    <div>
+                        <b>@Purchase.Supplier!.ContactFullName</b>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label>Teléfono:</label>
+                    <div>
+                        <b>@Purchase.Supplier!.Phone</b>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label>Email:</label>
+                    <div>
+                        <b>@Purchase.Supplier!.Email</b>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="mb-3">
+                    <label>Líneas:</label>
+                    <div>
+                        <b>@($"{Purchase.Lines:N0}")</b>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label>Cantidad:</label>
+                    <div>
+                        <b>@($"{Purchase.Quantity:N2}")</b>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label>Value:</label>
+                    <div>
+                        <b>@($"{Purchase.Value:N2}")</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <MudTable Items="@PurchaseDetails"
+                  @ref="table"
+                  ServerData="LoadListAsync"
+                  Dense="true"
+                  Hover="true"
+                  Striped="true"
+                  FixedHeader="true"
+                  FixedFooter="true">
+            <ToolBarContent>
+                <div class="d-flex justify-content-between">
+                    <MudText Typo="Typo.h6" Class="me-4"><i class="bi bi-bag"></i> Detalle Compra</MudText>
+                </div>
+                <MudSpacer />
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Producto</MudTh>
+                <MudTh>Comentarios</MudTh>
+                <MudTh>Costo</MudTh>
+                <MudTh>Cantidad</MudTh>
+                <MudTh>Valor</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Producto">@(TruncateContent(context.Name!, 25))</MudTd>
+                <MudTd DataLabel="Comentarios">@(TruncateContent(context.Remarks!, 25))</MudTd>
+                <MudTd DataLabel="Costo">@($"{context.Cost:N0}")</MudTd>
+                <MudTd DataLabel="Cantidad">@($"{context.Quantity:N2}")</MudTd>
+                <MudTd DataLabel="Valor">@($"{context.Value:c2}")</MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>No se encontraron registros.</MudText>
+            </NoRecordsContent>
+            <PagerContent>
+                <MudTablePager RowsPerPageString="Numero de Registros:"
+                               PageSizeOptions="pageSizeOptions"
+                               AllItemsText="Todos"
+                               InfoFormat="@infoFormat" />
+            </PagerContent>
+        </MudTable>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.ArrowBack" Color="Color.Info" Href="/purchases" Class="p-2">
+                Regresar
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+}

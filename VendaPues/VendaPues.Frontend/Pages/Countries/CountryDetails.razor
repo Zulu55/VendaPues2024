@@ -1,0 +1,51 @@
+﻿@page "/countries/details/{CountryId:int}"
+
+@if (loading)
+{
+    <Loading />
+}
+else
+{
+    <MudTable Items="@states"
+              @ref="table"
+              ServerData="LoadListAsync"
+              Dense="true"
+              Hover="true"
+              Striped="true"
+              FixedHeader="true"
+              FixedFooter="true">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6" Class="mr-4"><i class="bi bi-globe-americas"></i> @country?.Name</MudText>
+            <MudButton Variant="Variant.Outlined" Class="mr-4" StartIcon="@Icons.Material.Filled.ArrowBack" Color="Color.Tertiary" OnClick="ReturnAction">Regresar</MudButton>
+            <MudButton Variant="Variant.Outlined" Class="mr-4" EndIcon="@Icons.Material.Filled.Add" Color="Color.Info" OnClick="@(() => ShowModalAsync())">Crear</MudButton>
+            <MudSpacer />
+            <FilterComponent ApplyFilter="SetFilterValue" />
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Estado</MudTh>
+            <MudTh style="width: 100px;">Ciudades</MudTh>
+            <MudTh style="width: 270px;">Acciones</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Estado">@context.Name</MudTd>
+            <MudTd DataLabel="Ciudades">
+                <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Map" Color="Color.Info" OnClick="@(() => CitiesAction(@context))" style="width: 100px;">
+                    @context.CitiesNumber
+                </MudButton>
+            </MudTd>
+            <MudTd DataLabel="Acciones">
+                <MudButton Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="@(() => ShowModalAsync(context.Id, true))">Editar</MudButton>
+                <MudButton Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick=@(() => DeleteAsync(@context))>Eliminar</MudButton>
+            </MudTd>
+        </RowTemplate>
+        <NoRecordsContent>
+            <MudText>No se encontraron registros.</MudText>
+        </NoRecordsContent>
+        <PagerContent>
+            <MudTablePager RowsPerPageString="Numero de Registros:"
+                           PageSizeOptions="pageSizeOptions"
+                           AllItemsText="Todos"
+                           InfoFormat="@infoFormat" />
+        </PagerContent>
+    </MudTable>
+}

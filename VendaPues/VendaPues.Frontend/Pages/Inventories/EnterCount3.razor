@@ -1,0 +1,55 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudTable Items="@InventoryDetails"
+                  @ref="table"
+                  ServerData="LoadListAsync"
+                  Dense="true"
+                  Hover="true"
+                  Striped="true"
+                  FixedHeader="true"
+                  FixedFooter="true"
+                  Class="mb-2">
+            <ToolBarContent>
+                <FilterComponent ApplyFilter="SetFilterValue" />
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Producto</MudTh>
+                <MudTh>Costo</MudTh>
+                <MudTh>Cantidad</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Producto">@context.Product!.Name</MudTd>
+                <MudTd DataLabel="Costo">
+                    <MudNumericField @bind-Value="@context.Cost" Label="Costo" Disabled="@(!enableModifyCost)" />
+                </MudTd>
+                <MudTd DataLabel="Cantidad">
+                    <MudNumericField @bind-Value="@context.Count3" Label="Cantidad" />
+                </MudTd>
+            </RowTemplate>
+            <NoRecordsContent>
+                <MudText>No se encontraron registros.</MudText>
+            </NoRecordsContent>
+            <PagerContent>
+                <div class="m-2 p-2">
+                    <MudCheckBox T="bool" Value="enableModifyCost" ValueChanged="OnEnableModifyCostChanged">¿Permite modificar los costos?</MudCheckBox>
+                    <MudText Typo="Typo.body1">Anttes de cambiar de página haga click en el botón <b>Guardar</b> para no perder los cambios</MudText>
+                </div>
+                <MudTablePager RowsPerPageString="Numero de Registros:"
+                               PageSizeOptions="pageSizeOptions"
+                               AllItemsText="Todos"
+                               InfoFormat="@infoFormat" />
+            </PagerContent>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.ArrowBack" Color="Color.Info" Href="/inventories">
+            Regresar
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary" OnClick="SaveCount">
+            Guardar
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Check" Color="Color.Secondary" OnClick="FinishCountAsync">
+            Terminar Conteo
+        </MudButton>
+    </DialogActions>
+</MudDialog>

@@ -1,0 +1,25 @@
+﻿<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"></NavigationLock>
+
+<EditForm EditContext="editContext" OnValidSubmit="OnDataAnnotationsValidatedAsync">
+    <DataAnnotationsValidator />
+
+    <MudTextField Label="Título"
+                  @bind-Value="@NewsArticle.Title"
+                  For="@(() => NewsArticle.Title)"
+                  Class="mb-2" />
+    <MudTextField Label="Resumen"
+                  @bind-Value="@NewsArticle.Summary"
+                  For="@(() => NewsArticle.Summary)"
+                  Lines="3"
+                  Class="mb-2" />
+    <MudCheckBox T="bool" @bind-Checked="@NewsArticle.Active">Activa</MudCheckBox>
+    <InputImg Label="Imagen" ImageSelected="ImageSelected" ImageURL="@imageUrl" />
+    <div class="mt-3">
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.ArrowBack" Color="Color.Info" OnClick="ReturnAction" Class="mx-2">
+            Regresar
+        </MudButton>
+        <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Check" Color="Color.Primary" ButtonType="ButtonType.Submit">
+            Guardar
+        </MudButton>
+    </div>
+</EditForm>

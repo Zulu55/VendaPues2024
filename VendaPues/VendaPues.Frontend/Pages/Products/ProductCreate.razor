@@ -1,0 +1,12 @@
+﻿@if (loading)
+{
+    <Loading />
+}
+else
+{
+    <MudDialog>
+        <DialogContent>
+                <ProductForm @ref="productForm" ProductDTO="productDTO" NonSelectedCategories="nonSelectedCategories" OnValidSubmit="CreateAsync" ReturnAction="Return" />
+            </DialogContent>
+    </MudDialog>
+}

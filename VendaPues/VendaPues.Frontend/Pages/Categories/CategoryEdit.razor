@@ -1,0 +1,12 @@
+﻿@if(loading)
+{
+    <Loading/>
+}
+else
+{
+    <MudDialog>
+        <DialogContent>
+            <FormWithName @ref="categoryForm" Label="Categoría: " Model="category" OnValidSubmit="EditAsync" ReturnAction="Return" />
+        </DialogContent>
+    </MudDialog>
+}

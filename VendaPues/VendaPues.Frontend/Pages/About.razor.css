@@ -1,0 +1,39 @@
+﻿.center-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.cards-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px; 
+    flex-wrap: wrap;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 200px;
+    height: 300px;
+    text-align: center;
+}
+
+.fixed-size-image {
+    width: 200px;
+    height: 200px;
+}
+
+.card .MudText {
+    margin-top: 10px;
+}
+
+.centered-text {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
