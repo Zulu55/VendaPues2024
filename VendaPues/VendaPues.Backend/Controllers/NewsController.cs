@@ -5,63 +5,64 @@ using VendaPues.Backend.UnitsOfWork.Interfaces;
 using VendaPues.Shared.DTOs;
 using VendaPues.Shared.Entities;
 
-namespace VendaPues.Backend.Controllers;
-
-[ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Route("api/[controller]")]
-public class NewsController : GenericController<NewsArticle>
+namespace VendaPues.Backend.Controllers
 {
-    private readonly INewsUnitOfWork _newsUnitOfWork;
-
-    public NewsController(IGenericUnitOfWork<NewsArticle> unitOfWork, INewsUnitOfWork newsUnitOfWork) : base(unitOfWork)
+    [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/[controller]")]
+    public class NewsController : GenericController<NewsArticle>
     {
-        _newsUnitOfWork = newsUnitOfWork;
-    }
+        private readonly INewsUnitOfWork _newsUnitOfWork;
 
-    [HttpPut]
-    public override async Task<IActionResult> PutAsync(NewsArticle model)
-    {
-        var action = await _newsUnitOfWork.UpdateAsync(model);
-        if (action.WasSuccess)
+        public NewsController(IGenericUnitOfWork<NewsArticle> unitOfWork, INewsUnitOfWork newsUnitOfWork) : base(unitOfWork)
         {
-            return Ok(action.Result);
+            _newsUnitOfWork = newsUnitOfWork;
         }
-        return BadRequest(action.Message);
-    }
 
-    [HttpPost]
-    public override async Task<IActionResult> PostAsync(NewsArticle model)
-    {
-        var action = await _newsUnitOfWork.AddAsync(model);
-        if (action.WasSuccess)
+        [HttpPut]
+        public override async Task<IActionResult> PutAsync(NewsArticle model)
         {
-            return Ok(action.Result);
+            var action = await _newsUnitOfWork.UpdateAsync(model);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest(action.Message);
         }
-        return BadRequest(action.Message);
-    }
 
-    [AllowAnonymous]
-    [HttpGet("recordsNumber")]
-    public override async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
-    {
-        var response = await _newsUnitOfWork.GetRecordsNumberAsync(pagination);
-        if (response.WasSuccess)
+        [HttpPost]
+        public override async Task<IActionResult> PostAsync(NewsArticle model)
         {
-            return Ok(response.Result);
+            var action = await _newsUnitOfWork.AddAsync(model);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest(action.Message);
         }
-        return BadRequest();
-    }
 
-    [AllowAnonymous]
-    [HttpGet]
-    public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
-    {
-        var response = await _newsUnitOfWork.GetAsync(pagination);
-        if (response.WasSuccess)
+        [AllowAnonymous]
+        [HttpGet("recordsNumber")]
+        public override async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(response.Result);
+            var response = await _newsUnitOfWork.GetRecordsNumberAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
         }
-        return BadRequest();
+
+        [AllowAnonymous]
+        [HttpGet]
+        public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
+        {
+            var response = await _newsUnitOfWork.GetAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
+        }
     }
 }

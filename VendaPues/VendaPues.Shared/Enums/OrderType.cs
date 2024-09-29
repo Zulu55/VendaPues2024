@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel;
 
-namespace VendaPues.Shared.Enums;
-
-public enum OrderType
+namespace VendaPues.Shared.Enums
 {
-    [Description("Pago contra entrega")]
-    PaymentAgainstDelivery,
+    public enum OrderType
+    {
+        [Description("Pago contra entrega")]
+        PaymentAgainstDelivery,
 
-    [Description("Pago en línea")]
-    PayOnLine
+        [Description("Pago en línea")]
+        PayOnLine
+    }
 }

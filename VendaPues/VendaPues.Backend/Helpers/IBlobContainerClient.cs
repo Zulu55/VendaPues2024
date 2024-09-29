@@ -1,13 +1,14 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
-namespace VendaPues.Backend.Helpers;
-
-public interface IBlobContainerClient
+namespace VendaPues.Backend.Helpers
 {
-    Task<BlobClient> GetBlobClientAsync(string name);
+    public interface IBlobContainerClient
+    {
+        Task<BlobClient> GetBlobClientAsync(string name);
 
-    Task CreateIfNotExistsAsync();
+        Task CreateIfNotExistsAsync();
 
-    Task SetAccessPolicyAsync(PublicAccessType accessType);
+        Task SetAccessPolicyAsync(PublicAccessType accessType);
+    }
 }

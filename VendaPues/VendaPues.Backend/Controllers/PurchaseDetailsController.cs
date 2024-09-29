@@ -5,39 +5,40 @@ using VendaPues.Backend.UnitsOfWork.Interfaces;
 using VendaPues.Shared.DTOs;
 using VendaPues.Shared.Entities;
 
-namespace VendaPues.Backend.Controllers;
-
-[ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Route("api/[controller]")]
-public class PurchaseDetailsController : GenericController<PurchaseDetail>
+namespace VendaPues.Backend.Controllers
 {
-    private readonly IPurchaseDetailUnitOfWork _purchaseDetailUnitOfWork;
-
-    public PurchaseDetailsController(IGenericUnitOfWork<PurchaseDetail> unitOfWork, IPurchaseDetailUnitOfWork purchaseDetailUnitOfWork) : base(unitOfWork)
+    [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/[controller]")]
+    public class PurchaseDetailsController : GenericController<PurchaseDetail>
     {
-        _purchaseDetailUnitOfWork = purchaseDetailUnitOfWork;
-    }
+        private readonly IPurchaseDetailUnitOfWork _purchaseDetailUnitOfWork;
 
-    [HttpGet("recordsNumber")]
-    public override async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
-    {
-        var response = await _purchaseDetailUnitOfWork.GetRecordsNumberAsync(pagination);
-        if (response.WasSuccess)
+        public PurchaseDetailsController(IGenericUnitOfWork<PurchaseDetail> unitOfWork, IPurchaseDetailUnitOfWork purchaseDetailUnitOfWork) : base(unitOfWork)
         {
-            return Ok(response.Result);
+            _purchaseDetailUnitOfWork = purchaseDetailUnitOfWork;
         }
-        return BadRequest();
-    }
 
-    [HttpGet]
-    public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
-    {
-        var response = await _purchaseDetailUnitOfWork.GetAsync(pagination);
-        if (response.WasSuccess)
+        [HttpGet("recordsNumber")]
+        public override async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(response.Result);
+            var response = await _purchaseDetailUnitOfWork.GetRecordsNumberAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
         }
-        return BadRequest();
+
+        [HttpGet]
+        public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
+        {
+            var response = await _purchaseDetailUnitOfWork.GetAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
+        }
     }
 }

@@ -1,6 +1,13 @@
-﻿namespace VendaPues.Shared.DTOs;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-public class ReportFilterDTO
+namespace VendaPues.Shared.DTOs
 {
-    public int Id { get; set; }
+    public class ReportFilterDTO
+    {
+        public int Id { get; set; }
+    }
 }

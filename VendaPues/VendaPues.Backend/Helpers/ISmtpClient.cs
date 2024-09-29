@@ -1,14 +1,15 @@
 ﻿using MimeKit;
 
-namespace VendaPues.Backend.Helpers;
-
-public interface ISmtpClient
+namespace VendaPues.Backend.Helpers
 {
-    void Connect(string host, int port, bool useSsl);
+    public interface ISmtpClient
+    {
+        void Connect(string host, int port, bool useSsl);
 
-    void Authenticate(string username, string password);
+        void Authenticate(string username, string password);
 
-    void Send(MimeMessage message);
+        void Send(MimeMessage message);
 
-    void Disconnect(bool quit);
+        void Disconnect(bool quit);
+    }
 }

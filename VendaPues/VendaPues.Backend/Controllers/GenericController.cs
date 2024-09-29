@@ -2,102 +2,103 @@
 using VendaPues.Backend.UnitsOfWork.Interfaces;
 using VendaPues.Shared.DTOs;
 
-namespace VendaPues.Backend.Controllers;
-
-public class GenericController<T> : Controller where T : class
+namespace VendaPues.Backend.Controllers
 {
-    private readonly IGenericUnitOfWork<T> _unitOfWork;
-
-    public GenericController(IGenericUnitOfWork<T> unitOfWork)
+    public class GenericController<T> : Controller where T : class
     {
-        _unitOfWork = unitOfWork;
-    }
+        private readonly IGenericUnitOfWork<T> _unitOfWork;
 
-    [HttpGet("recordsNumber")]
-    public virtual async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
-    {
-        var response = await _unitOfWork.GetRecordsNumberAsync(pagination);
-        if (response.WasSuccess)
+        public GenericController(IGenericUnitOfWork<T> unitOfWork)
         {
-            return Ok(response.Result);
+            _unitOfWork = unitOfWork;
         }
-        return BadRequest();
-    }
 
-    [HttpGet("full")]
-    public virtual async Task<IActionResult> GetAsync()
-    {
-        var action = await _unitOfWork.GetAsync();
-        if (action.WasSuccess)
+        [HttpGet("recordsNumber")]
+        public virtual async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(action.Result);
+            var response = await _unitOfWork.GetRecordsNumberAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
         }
-        return BadRequest();
-    }
 
-    [HttpGet]
-    public virtual async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
-    {
-        var action = await _unitOfWork.GetAsync(pagination);
-        if (action.WasSuccess)
+        [HttpGet("full")]
+        public virtual async Task<IActionResult> GetAsync()
         {
-            return Ok(action.Result);
+            var action = await _unitOfWork.GetAsync();
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
         }
-        return BadRequest();
-    }
 
-    [HttpGet("totalPages")]
-    public virtual async Task<IActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
-    {
-        var action = await _unitOfWork.GetTotalPagesAsync(pagination);
-        if (action.WasSuccess)
+        [HttpGet]
+        public virtual async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(action.Result);
+            var action = await _unitOfWork.GetAsync(pagination);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
         }
-        return BadRequest();
-    }
 
-    [HttpGet("{id}")]
-    public virtual async Task<IActionResult> GetAsync(int id)
-    {
-        var action = await _unitOfWork.GetAsync(id);
-        if (action.WasSuccess)
+        [HttpGet("totalPages")]
+        public virtual async Task<IActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(action.Result);
+            var action = await _unitOfWork.GetTotalPagesAsync(pagination);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
         }
-        return NotFound();
-    }
 
-    [HttpPost]
-    public virtual async Task<IActionResult> PostAsync(T model)
-    {
-        var action = await _unitOfWork.AddAsync(model);
-        if (action.WasSuccess)
+        [HttpGet("{id}")]
+        public virtual async Task<IActionResult> GetAsync(int id)
         {
-            return Ok(action.Result);
+            var action = await _unitOfWork.GetAsync(id);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return NotFound();
         }
-        return BadRequest(action.Message);
-    }
 
-    [HttpPut]
-    public virtual async Task<IActionResult> PutAsync(T model)
-    {
-        var action = await _unitOfWork.UpdateAsync(model);
-        if (action.WasSuccess)
+        [HttpPost]
+        public virtual async Task<IActionResult> PostAsync(T model)
         {
-            return Ok(action.Result);
+            var action = await _unitOfWork.AddAsync(model);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest(action.Message);
         }
-        return BadRequest(action.Message);
-    }
 
-    [HttpDelete("{id}")]
-    public virtual async Task<IActionResult> DeleteAsync(int id)
-    {
-        var action = await _unitOfWork.DeleteAsync(id);
-        if (action.WasSuccess)
+        [HttpPut]
+        public virtual async Task<IActionResult> PutAsync(T model)
         {
-            return NoContent();
+            var action = await _unitOfWork.UpdateAsync(model);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest(action.Message);
         }
-        return BadRequest(action.Message);
+
+        [HttpDelete("{id}")]
+        public virtual async Task<IActionResult> DeleteAsync(int id)
+        {
+            var action = await _unitOfWork.DeleteAsync(id);
+            if (action.WasSuccess)
+            {
+                return NoContent();
+            }
+            return BadRequest(action.Message);
+        }
     }
 }

@@ -5,46 +5,47 @@ using VendaPues.Backend.UnitsOfWork.Interfaces;
 using VendaPues.Shared.DTOs;
 using VendaPues.Shared.Entities;
 
-namespace VendaPues.Backend.Controllers;
-
-[ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Route("api/[controller]")]
-public class BanksController : GenericController<Bank>
+namespace VendaPues.Backend.Controllers
 {
-    private readonly IBanksUnitOfWork _banksUnitOfWork;
-
-    public BanksController(IGenericUnitOfWork<Bank> unitOfWork, IBanksUnitOfWork banksUnitOfWork) : base(unitOfWork)
+    [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/[controller]")]
+    public class BanksController : GenericController<Bank>
     {
-        _banksUnitOfWork = banksUnitOfWork;
-    }
+        private readonly IBanksUnitOfWork _banksUnitOfWork;
 
-    [HttpGet("recordsNumber")]
-    public override async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
-    {
-        var response = await _banksUnitOfWork.GetRecordsNumberAsync(pagination);
-        if (response.WasSuccess)
+        public BanksController(IGenericUnitOfWork<Bank> unitOfWork, IBanksUnitOfWork banksUnitOfWork) : base(unitOfWork)
         {
-            return Ok(response.Result);
+            _banksUnitOfWork = banksUnitOfWork;
         }
-        return BadRequest();
-    }
 
-    [HttpGet]
-    public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
-    {
-        var response = await _banksUnitOfWork.GetAsync(pagination);
-        if (response.WasSuccess)
+        [HttpGet("recordsNumber")]
+        public override async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(response.Result);
+            var response = await _banksUnitOfWork.GetRecordsNumberAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
         }
-        return BadRequest();
-    }
 
-    [AllowAnonymous]
-    [HttpGet("combo")]
-    public async Task<IActionResult> GetComboAsync()
-    {
-        return Ok(await _banksUnitOfWork.GetComboAsync());
+        [HttpGet]
+        public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
+        {
+            var response = await _banksUnitOfWork.GetAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("combo")]
+        public async Task<IActionResult> GetComboAsync()
+        {
+            return Ok(await _banksUnitOfWork.GetComboAsync());
+        }
     }
 }

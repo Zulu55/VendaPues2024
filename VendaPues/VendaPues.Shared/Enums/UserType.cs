@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel;
 
-namespace VendaPues.Shared.Enums;
-
-public enum UserType
+namespace VendaPues.Shared.Enums
 {
-    [Description("Administrador")]
-    Admin,
+    public enum UserType
+    {
+        [Description("Administrador")]
+        Admin,
 
-    [Description("Usuario")]
-    User
+        [Description("Usuario")]
+        User
+    }
 }

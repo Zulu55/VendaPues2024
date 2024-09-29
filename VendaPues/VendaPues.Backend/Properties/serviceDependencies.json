@@ -1,9 +1,5 @@
 {
   "dependencies": {
-    "identityapp1": {
-      "ignored": "true",
-      "type": "identityapp"
-    },
     "storage1": {
       "type": "storage",
       "connectionId": "ConnectionStrings:AzureStorage",

@@ -2,15 +2,16 @@
 using VendaPues.Shared.Entities;
 using VendaPues.Shared.Responses;
 
-namespace VendaPues.Backend.Repositories.Interfaces;
-
-public interface ICitiesRepository
+namespace VendaPues.Backend.Repositories.Interfaces
 {
-    Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination);
+    public interface ICitiesRepository
+    {
+        Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination);
+        
+        Task<ActionResponse<IEnumerable<City>>> GetAsync(PaginationDTO pagination);
 
-    Task<ActionResponse<IEnumerable<City>>> GetAsync(PaginationDTO pagination);
+        Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination);
 
-    Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination);
-
-    Task<IEnumerable<City>> GetComboAsync(int stateId);
+        Task<IEnumerable<City>> GetComboAsync(int stateId);
+    }
 }

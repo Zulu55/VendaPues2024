@@ -1,8 +1,9 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace VendaPues.Backend.Helpers;
-
-public class RuntimeInformationWrapper : IRuntimeInformationWrapper
+namespace VendaPues.Backend.Helpers
 {
-    public bool IsOSPlatform(OSPlatform osPlatform) => RuntimeInformation.IsOSPlatform(osPlatform);
+    public class RuntimeInformationWrapper : IRuntimeInformationWrapper
+    {
+        public bool IsOSPlatform(OSPlatform osPlatform) => RuntimeInformation.IsOSPlatform(osPlatform);
+    }
 }

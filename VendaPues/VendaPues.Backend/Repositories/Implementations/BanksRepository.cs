@@ -6,58 +6,59 @@ using VendaPues.Shared.DTOs;
 using VendaPues.Shared.Entities;
 using VendaPues.Shared.Responses;
 
-namespace VendaPues.Backend.Repositories.Implementations;
-
-public class BanksRepository : GenericRepository<Bank>, IBanksRepository
+namespace VendaPues.Backend.Repositories.Implementations
 {
-    private readonly DataContext _context;
-
-    public BanksRepository(DataContext context) : base(context)
+    public class BanksRepository : GenericRepository<Bank>, IBanksRepository
     {
-        _context = context;
-    }
+        private readonly DataContext _context;
 
-    public override async Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination)
-    {
-        var queryable = _context.Banks.AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(pagination.Filter))
+        public BanksRepository(DataContext context) : base(context)
         {
-            queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            _context = context;
         }
 
-        int recordsNumber = await queryable.CountAsync();
-
-        return new ActionResponse<int>
+        public override async Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination)
         {
-            WasSuccess = true,
-            Result = recordsNumber
-        };
-    }
+            var queryable = _context.Banks.AsQueryable();
 
-    public async Task<IEnumerable<Bank>> GetComboAsync()
-    {
-        return await _context.Banks
-            .OrderBy(c => c.Name)
-            .ToListAsync();
-    }
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
 
-    public override async Task<ActionResponse<IEnumerable<Bank>>> GetAsync(PaginationDTO pagination)
-    {
-        var queryable = _context.Banks.AsQueryable();
+            int recordsNumber = await queryable.CountAsync();
 
-        if (!string.IsNullOrWhiteSpace(pagination.Filter))
-        {
-            queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = recordsNumber
+            };
         }
 
-        return new ActionResponse<IEnumerable<Bank>>
+        public async Task<IEnumerable<Bank>> GetComboAsync()
         {
-            WasSuccess = true,
-            Result = await queryable
-                .OrderBy(x => x.Name)
-                .Paginate(pagination)
-                .ToListAsync()
-        };
+            return await _context.Banks
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+        }
+
+        public override async Task<ActionResponse<IEnumerable<Bank>>> GetAsync(PaginationDTO pagination)
+        {
+            var queryable = _context.Banks.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            return new ActionResponse<IEnumerable<Bank>>
+            {
+                WasSuccess = true,
+                Result = await queryable
+                    .OrderBy(x => x.Name)
+                    .Paginate(pagination)
+                    .ToListAsync()
+            };
+        }
     }
 }

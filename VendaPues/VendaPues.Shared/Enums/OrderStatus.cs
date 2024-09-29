@@ -1,21 +1,22 @@
 ﻿using System.ComponentModel;
 
-namespace VendaPues.Shared.Enums;
-
-public enum OrderStatus
+namespace VendaPues.Shared.Enums
 {
-    [Description("Nuevo")]
-    New,
+    public enum OrderStatus
+    {
+        [Description("Nuevo")]
+        New,
 
-    [Description("Despachado")]
-    Dispatched,
+        [Description("Despachado")]
+        Dispatched,
 
-    [Description("Enviado")]
-    Sent,
+        [Description("Enviado")]
+        Sent,
 
-    [Description("Confirmado")]
-    Confirmed,
+        [Description("Confirmado")]
+        Confirmed,
 
-    [Description("Cancelado")]
-    Cancelled
+        [Description("Cancelado")]
+        Cancelled
+    }
 }

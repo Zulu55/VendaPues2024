@@ -1,6 +1,7 @@
-﻿namespace VendaPues.Backend.Helpers;
-
-public class BlobContainerClientFactory : IBlobContainerClientFactory
+﻿namespace VendaPues.Backend.Helpers
 {
-    public IBlobContainerClient CreateBlobContainerClient(string connectionString, string containerName) => new BlobContainerClientWrapper(connectionString, containerName);
+    public class BlobContainerClientFactory : IBlobContainerClientFactory
+    {
+        public IBlobContainerClient CreateBlobContainerClient(string connectionString, string containerName) => new BlobContainerClientWrapper(connectionString, containerName);
+    }
 }

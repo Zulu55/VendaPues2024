@@ -1,12 +1,13 @@
-﻿namespace VendaPues.Shared.DTOs;
-
-public class TemporalOrderDTO
+﻿namespace VendaPues.Shared.DTOs
 {
-    public int Id { get; set; }
+    public class TemporalOrderDTO
+    {
+        public int Id { get; set; }
 
-    public int ProductId { get; set; }
+        public int ProductId { get; set; }
 
-    public float Quantity { get; set; } = 1;
+        public float Quantity { get; set; } = 1;
 
-    public string Remarks { get; set; } = string.Empty;
+        public string Remarks { get; set; } = string.Empty;
+    }
 }

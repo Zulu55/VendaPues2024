@@ -5,39 +5,40 @@ using VendaPues.Backend.UnitsOfWork.Interfaces;
 using VendaPues.Shared.DTOs;
 using VendaPues.Shared.Entities;
 
-namespace VendaPues.Backend.Controllers;
-
-[ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Route("api/[controller]")]
-public class KardexController : GenericController<Kardex>
+namespace VendaPues.Backend.Controllers
 {
-    private readonly IKardexUnitOfWork _kardexUnitOfWork;
-
-    public KardexController(IGenericUnitOfWork<Kardex> unitOfWork, IKardexUnitOfWork kardexUnitOfWork) : base(unitOfWork)
+    [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/[controller]")]
+    public class KardexController : GenericController<Kardex>
     {
-        _kardexUnitOfWork = kardexUnitOfWork;
-    }
+        private readonly IKardexUnitOfWork _kardexUnitOfWork;
 
-    [HttpGet("recordsNumber")]
-    public override async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
-    {
-        var response = await _kardexUnitOfWork.GetRecordsNumberAsync(pagination);
-        if (response.WasSuccess)
+        public KardexController(IGenericUnitOfWork<Kardex> unitOfWork, IKardexUnitOfWork kardexUnitOfWork) : base(unitOfWork)
         {
-            return Ok(response.Result);
+            _kardexUnitOfWork = kardexUnitOfWork;
         }
-        return BadRequest();
-    }
 
-    [HttpGet]
-    public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
-    {
-        var response = await _kardexUnitOfWork.GetAsync(pagination);
-        if (response.WasSuccess)
+        [HttpGet("recordsNumber")]
+        public override async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(response.Result);
+            var response = await _kardexUnitOfWork.GetRecordsNumberAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
         }
-        return BadRequest();
+
+        [HttpGet]
+        public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
+        {
+            var response = await _kardexUnitOfWork.GetAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
+        }
     }
 }

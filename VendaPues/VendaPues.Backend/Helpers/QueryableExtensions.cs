@@ -1,13 +1,14 @@
 ﻿using VendaPues.Shared.DTOs;
 
-namespace VendaPues.Backend.Helpers;
-
-public static class QueryableExtensions
+namespace VendaPues.Backend.Helpers
 {
-    public static IQueryable<T> Paginate<T>(this IQueryable<T> queryable, PaginationDTO pagination)
+    public static class QueryableExtensions
     {
-        return queryable
-            .Skip((pagination.Page - 1) * pagination.RecordsNumber)
-            .Take(pagination.RecordsNumber);
+        public static IQueryable<T> Paginate<T>(this IQueryable<T> queryable, PaginationDTO pagination)
+        {
+            return queryable
+                .Skip((pagination.Page - 1) * pagination.RecordsNumber)
+                .Take(pagination.RecordsNumber);
+        }
     }
 }

@@ -6,61 +6,62 @@ using VendaPues.Shared.DTOs;
 using VendaPues.Shared.Entities;
 using VendaPues.Shared.Responses;
 
-namespace VendaPues.Backend.Repositories.Implementations;
-
-public class PurchaseDetailRepository : GenericRepository<PurchaseDetail>, IPurchaseDetailRepository
+namespace VendaPues.Backend.Repositories.Implementations
 {
-    private readonly DataContext _context;
-
-    public PurchaseDetailRepository(DataContext context) : base(context)
+    public class PurchaseDetailRepository : GenericRepository<PurchaseDetail>, IPurchaseDetailRepository
     {
-        _context = context;
-    }
+        private readonly DataContext _context;
 
-    public override async Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination)
-    {
-        var queryable = _context.PurchaseDetails.AsQueryable();
-
-        if (pagination.Id != 0)
+        public PurchaseDetailRepository(DataContext context) : base(context)
         {
-            queryable = queryable.Where(x => x.PurchaseId == pagination.Id);
+            _context = context;
         }
 
-        if (!string.IsNullOrWhiteSpace(pagination.Filter))
+        public override async Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination)
         {
-            queryable = queryable.Where(x => x.Name.Contains(pagination.Filter, StringComparison.CurrentCultureIgnoreCase));
+            var queryable = _context.PurchaseDetails.AsQueryable();
+
+            if (pagination.Id != 0)
+            {
+                queryable = queryable.Where(x => x.PurchaseId == pagination.Id);
+            }
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.Contains(pagination.Filter, StringComparison.CurrentCultureIgnoreCase));
+            }
+
+            int recordsNumber = await queryable.CountAsync();
+
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = recordsNumber
+            };
         }
 
-        int recordsNumber = await queryable.CountAsync();
-
-        return new ActionResponse<int>
+        public override async Task<ActionResponse<IEnumerable<PurchaseDetail>>> GetAsync(PaginationDTO pagination)
         {
-            WasSuccess = true,
-            Result = recordsNumber
-        };
-    }
+            var queryable = _context.PurchaseDetails.AsQueryable();
 
-    public override async Task<ActionResponse<IEnumerable<PurchaseDetail>>> GetAsync(PaginationDTO pagination)
-    {
-        var queryable = _context.PurchaseDetails.AsQueryable();
+            if (pagination.Id != 0)
+            {
+                queryable = queryable.Where(x => x.PurchaseId == pagination.Id);
+            }
 
-        if (pagination.Id != 0)
-        {
-            queryable = queryable.Where(x => x.PurchaseId == pagination.Id);
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.Contains(pagination.Filter, StringComparison.CurrentCultureIgnoreCase));
+            }
+
+            return new ActionResponse<IEnumerable<PurchaseDetail>>
+            {
+                WasSuccess = true,
+                Result = await queryable
+                    .OrderBy(x => x.Name)
+                    .Paginate(pagination)
+                    .ToListAsync()
+            };
         }
-
-        if (!string.IsNullOrWhiteSpace(pagination.Filter))
-        {
-            queryable = queryable.Where(x => x.Name.Contains(pagination.Filter, StringComparison.CurrentCultureIgnoreCase));
-        }
-
-        return new ActionResponse<IEnumerable<PurchaseDetail>>
-        {
-            WasSuccess = true,
-            Result = await queryable
-                .OrderBy(x => x.Name)
-                .Paginate(pagination)
-                .ToListAsync()
-        };
     }
 }

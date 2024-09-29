@@ -1,18 +1,19 @@
-﻿namespace VendaPues.Backend.Helpers;
-
-public interface IFileStorage
+﻿namespace VendaPues.Backend.Helpers
 {
-    Task<string> SaveFileAsync(byte[] content, string extention, string containerName);
-
-    Task RemoveFileAsync(string path, string containerName);
-
-    async Task<string> EditFileAsync(byte[] content, string extention, string containerName, string path)
+    public interface IFileStorage
     {
-        if (path is not null)
-        {
-            await RemoveFileAsync(path, containerName);
-        }
+        Task<string> SaveFileAsync(byte[] content, string extention, string containerName);
 
-        return await SaveFileAsync(content, extention, containerName);
+        Task RemoveFileAsync(string path, string containerName);
+
+        async Task<string> EditFileAsync(byte[] content, string extention, string containerName, string path)
+        {
+            if (path is not null)
+            {
+                await RemoveFileAsync(path, containerName);
+            }
+
+            return await SaveFileAsync(content, extention, containerName);
+        }
     }
 }

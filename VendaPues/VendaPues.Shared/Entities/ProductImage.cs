@@ -1,15 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VendaPues.Shared.Entities;
-
-public class ProductImage
+namespace VendaPues.Shared.Entities
 {
-    public int Id { get; set; }
+    public class ProductImage
+    {
+        public int Id { get; set; }
 
-    public Product? Product { get; set; }
+        public Product? Product { get; set; }
 
-    public int ProductId { get; set; }
+        public int ProductId { get; set; }
 
-    [Display(Name = "Imagén")]
-    public string Image { get; set; } = null!;
+        [Display(Name = "Imagén")]
+        public string Image { get; set; } = null!;
+    }
 }

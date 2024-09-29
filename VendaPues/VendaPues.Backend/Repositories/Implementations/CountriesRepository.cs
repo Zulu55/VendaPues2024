@@ -6,113 +6,115 @@ using VendaPues.Shared.DTOs;
 using VendaPues.Shared.Entities;
 using VendaPues.Shared.Responses;
 
-namespace VendaPues.Backend.Repositories.Implementations;
-
-public class CountriesRepository : GenericRepository<Country>, ICountriesRepository
+namespace VendaPues.Backend.Repositories.Implementations
 {
-    private readonly DataContext _context;
-
-    public CountriesRepository(DataContext context) : base(context)
+    public class CountriesRepository : GenericRepository<Country>, ICountriesRepository
     {
-        _context = context;
-    }
+        private readonly DataContext _context;
 
-    public override async Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination)
-    {
-        var queryable = _context.Countries.AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(pagination.Filter))
+        public CountriesRepository(DataContext context) : base(context)
         {
-            queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            _context = context;
         }
 
-        int recordsNumber = await queryable.CountAsync();
-
-        return new ActionResponse<int>
+        public override async Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination)
         {
-            WasSuccess = true,
-            Result = recordsNumber
-        };
-    }
+            var queryable = _context.Countries.AsQueryable();
 
-    public override async Task<ActionResponse<IEnumerable<Country>>> GetAsync()
-    {
-        var countries = await _context.Countries
-            .OrderBy(x => x.Name)
-            .ToListAsync();
-        return new ActionResponse<IEnumerable<Country>>
-        {
-            WasSuccess = true,
-            Result = countries
-        };
-    }
-
-    public override async Task<ActionResponse<IEnumerable<Country>>> GetAsync(PaginationDTO pagination)
-    {
-        var queryable = _context.Countries
-            .Include(c => c.States)
-            .AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(pagination.Filter))
-        {
-            queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
-        }
-
-        return new ActionResponse<IEnumerable<Country>>
-        {
-            WasSuccess = true,
-            Result = await queryable
-                .OrderBy(x => x.Name)
-                .Paginate(pagination)
-                .ToListAsync()
-        };
-    }
-
-    public override async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
-    {
-        var queryable = _context.Countries.AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(pagination.Filter))
-        {
-            queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
-        }
-
-        double count = await queryable.CountAsync();
-        int totalPages = (int)Math.Ceiling(count / pagination.RecordsNumber);
-        return new ActionResponse<int>
-        {
-            WasSuccess = true,
-            Result = totalPages
-        };
-    }
-
-    public override async Task<ActionResponse<Country>> GetAsync(int id)
-    {
-        var country = await _context.Countries
-             .Include(c => c.States!)
-             .ThenInclude(s => s.Cities)
-             .FirstOrDefaultAsync(c => c.Id == id);
-
-        if (country == null)
-        {
-            return new ActionResponse<Country>
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
-                WasSuccess = false,
-                Message = "País no existe"
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            int recordsNumber = await queryable.CountAsync();
+
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = recordsNumber
             };
         }
 
-        return new ActionResponse<Country>
+        public override async Task<ActionResponse<IEnumerable<Country>>> GetAsync()
         {
-            WasSuccess = true,
-            Result = country
-        };
-    }
+            var countries = await _context.Countries
+                .OrderBy(x => x.Name)
+                .ToListAsync();
+            return new ActionResponse<IEnumerable<Country>>
+            {
+                WasSuccess = true,
+                Result = countries
+            };
+        }
 
-    public async Task<IEnumerable<Country>> GetComboAsync()
-    {
-        return await _context.Countries
-            .OrderBy(c => c.Name)
-            .ToListAsync();
+        public override async Task<ActionResponse<IEnumerable<Country>>> GetAsync(PaginationDTO pagination)
+        {
+            var queryable = _context.Countries
+                .Include(c => c.States)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            return new ActionResponse<IEnumerable<Country>>
+            {
+                WasSuccess = true,
+                Result = await queryable
+                    .OrderBy(x => x.Name)
+                    .Paginate(pagination)
+                    .ToListAsync()
+            };
+        }
+
+        public override async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
+        {
+            var queryable = _context.Countries.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            double count = await queryable.CountAsync();
+            int totalPages = (int)Math.Ceiling(count / pagination.RecordsNumber);
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = totalPages
+            };
+        }
+
+
+        public override async Task<ActionResponse<Country>> GetAsync(int id)
+        {
+            var country = await _context.Countries
+                 .Include(c => c.States!)
+                 .ThenInclude(s => s.Cities)
+                 .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (country == null)
+            {
+                return new ActionResponse<Country>
+                {
+                    WasSuccess = false,
+                    Message = "País no existe"
+                };
+            }
+
+            return new ActionResponse<Country>
+            {
+                WasSuccess = true,
+                Result = country
+            };
+        }
+
+        public async Task<IEnumerable<Country>> GetComboAsync()
+        {
+            return await _context.Countries
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+        }
     }
 }

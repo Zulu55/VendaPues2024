@@ -1,10 +1,11 @@
-﻿namespace VendaPues.Shared.DTOs;
-
-public class PaymentDTO
+﻿namespace VendaPues.Shared.DTOs
 {
-    public int BankId { get; set; }
+    public class PaymentDTO
+    {
+        public int BankId { get; set; }
 
-    public string Email { get; set; } = null!;
+        public string Email { get; set; } = null!;
 
-    public decimal Value { get; set; }
+        public decimal Value { get; set; }
+    }
 }

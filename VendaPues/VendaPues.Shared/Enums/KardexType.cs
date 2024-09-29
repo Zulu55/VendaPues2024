@@ -1,18 +1,19 @@
 ﻿using System.ComponentModel;
 
-namespace VendaPues.Shared.Enums;
-
-public enum KardexType
+namespace VendaPues.Shared.Enums
 {
-    [Description("Compra")]
-    Purchase,
+    public enum KardexType
+    {
+        [Description("Compra")]
+        Purchase,
 
-    [Description("Pedido")]
-    Order,
+        [Description("Pedido")]
+        Order,
 
-    [Description("Cancelación Pedido")]
-    CancelOrder,
+        [Description("Cancelación Pedido")]
+        CancelOrder,
 
-    [Description("Inventory")]
-    Inventory
+        [Description("Inventory")]
+        Inventory
+    }
 }

@@ -1,6 +1,7 @@
-﻿namespace VendaPues.Shared.Interfaces;
-
-public interface IEntityWithName
+﻿namespace VendaPues.Shared.Interfaces
 {
-    string Name { get; set; }
+    public interface IEntityWithName
+    {
+        string Name { get; set; }
+    }
 }

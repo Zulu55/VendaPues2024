@@ -1,9 +1,10 @@
 ﻿using VendaPues.Shared.DTOs;
 using VendaPues.Shared.Responses;
 
-namespace VendaPues.Backend.Helpers;
-
-public interface IPurchaseHelper
+namespace VendaPues.Backend.Helpers
 {
-    Task<ActionResponse<bool>> ProcessPurchaseAsync(PurchaseDTO purchaseDTO, string email);
+    public interface IPurchaseHelper
+    {
+        Task<ActionResponse<bool>> ProcessPurchaseAsync(PurchaseDTO purchaseDTO, string email);
+    }
 }

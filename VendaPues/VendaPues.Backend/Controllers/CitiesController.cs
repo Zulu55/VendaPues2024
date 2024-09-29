@@ -5,57 +5,58 @@ using VendaPues.Backend.UnitsOfWork.Interfaces;
 using VendaPues.Shared.DTOs;
 using VendaPues.Shared.Entities;
 
-namespace VendaPues.Backend.Controllers;
-
-[ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Route("api/[controller]")]
-public class CitiesController : GenericController<City>
+namespace VendaPues.Backend.Controllers
 {
-    private readonly ICitiesUnitOfWork _citiesUnitOfWork;
-
-    public CitiesController(IGenericUnitOfWork<City> unitOfWork, ICitiesUnitOfWork citiesUnitOfWork) : base(unitOfWork)
+    [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/[controller]")]
+    public class CitiesController : GenericController<City>
     {
-        _citiesUnitOfWork = citiesUnitOfWork;
-    }
+        private readonly ICitiesUnitOfWork _citiesUnitOfWork;
 
-    [HttpGet("recordsNumber")]
-    public override async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
-    {
-        var response = await _citiesUnitOfWork.GetRecordsNumberAsync(pagination);
-        if (response.WasSuccess)
+        public CitiesController(IGenericUnitOfWork<City> unitOfWork, ICitiesUnitOfWork citiesUnitOfWork) : base(unitOfWork)
         {
-            return Ok(response.Result);
+            _citiesUnitOfWork = citiesUnitOfWork;
         }
-        return BadRequest();
-    }
 
-    [AllowAnonymous]
-    [HttpGet("combo/{stateId:int}")]
-    public async Task<IActionResult> GetComboAsync(int stateId)
-    {
-        return Ok(await _citiesUnitOfWork.GetComboAsync(stateId));
-    }
-
-    [HttpGet]
-    public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
-    {
-        var response = await _citiesUnitOfWork.GetAsync(pagination);
-        if (response.WasSuccess)
+        [HttpGet("recordsNumber")]
+        public override async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(response.Result);
+            var response = await _citiesUnitOfWork.GetRecordsNumberAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
         }
-        return BadRequest();
-    }
 
-    [HttpGet("totalPages")]
-    public override async Task<IActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
-    {
-        var action = await _citiesUnitOfWork.GetTotalPagesAsync(pagination);
-        if (action.WasSuccess)
+        [AllowAnonymous]
+        [HttpGet("combo/{stateId:int}")]
+        public async Task<IActionResult> GetComboAsync(int stateId)
         {
-            return Ok(action.Result);
+            return Ok(await _citiesUnitOfWork.GetComboAsync(stateId));
         }
-        return BadRequest();
+
+        [HttpGet]
+        public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
+        {
+            var response = await _citiesUnitOfWork.GetAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("totalPages")]
+        public override async Task<IActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
+        {
+            var action = await _citiesUnitOfWork.GetTotalPagesAsync(pagination);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
+        }
     }
 }

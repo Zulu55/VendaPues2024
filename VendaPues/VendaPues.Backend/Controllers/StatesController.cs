@@ -5,79 +5,80 @@ using VendaPues.Backend.UnitsOfWork.Interfaces;
 using VendaPues.Shared.DTOs;
 using VendaPues.Shared.Entities;
 
-namespace VendaPues.Backend.Controllers;
-
-[ApiController]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-[Route("api/[controller]")]
-public class StatesController : GenericController<State>
+namespace VendaPues.Backend.Controllers
 {
-    private readonly IStatesUnitOfWork _statesUnitOfWork;
-
-    public StatesController(IGenericUnitOfWork<State> unitOfWork, IStatesUnitOfWork statesUnitOfWork) : base(unitOfWork)
+    [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Route("api/[controller]")]
+    public class StatesController : GenericController<State>
     {
-        _statesUnitOfWork = statesUnitOfWork;
-    }
+        private readonly IStatesUnitOfWork _statesUnitOfWork;
 
-    [HttpGet("recordsNumber")]
-    public override async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
-    {
-        var response = await _statesUnitOfWork.GetRecordsNumberAsync(pagination);
-        if (response.WasSuccess)
+        public StatesController(IGenericUnitOfWork<State> unitOfWork, IStatesUnitOfWork statesUnitOfWork) : base(unitOfWork)
         {
-            return Ok(response.Result);
+            _statesUnitOfWork = statesUnitOfWork;
         }
-        return BadRequest();
-    }
 
-    [AllowAnonymous]
-    [HttpGet("combo/{countryId:int}")]
-    public async Task<IActionResult> GetComboAsync(int countryId)
-    {
-        return Ok(await _statesUnitOfWork.GetComboAsync(countryId));
-    }
-
-    [HttpGet("full")]
-    public override async Task<IActionResult> GetAsync()
-    {
-        var response = await _statesUnitOfWork.GetAsync();
-        if (response.WasSuccess)
+        [HttpGet("recordsNumber")]
+        public override async Task<IActionResult> GetRecordsNumberAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(response.Result);
+            var response = await _statesUnitOfWork.GetRecordsNumberAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
         }
-        return BadRequest();
-    }
 
-    [HttpGet]
-    public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
-    {
-        var response = await _statesUnitOfWork.GetAsync(pagination);
-        if (response.WasSuccess)
+        [AllowAnonymous]
+        [HttpGet("combo/{countryId:int}")]
+        public async Task<IActionResult> GetComboAsync(int countryId)
         {
-            return Ok(response.Result);
+            return Ok(await _statesUnitOfWork.GetComboAsync(countryId));
         }
-        return BadRequest();
-    }
 
-    [HttpGet("totalPages")]
-    public override async Task<IActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
-    {
-        var action = await _statesUnitOfWork.GetTotalPagesAsync(pagination);
-        if (action.WasSuccess)
+        [HttpGet("full")]
+        public override async Task<IActionResult> GetAsync()
         {
-            return Ok(action.Result);
+            var response = await _statesUnitOfWork.GetAsync();
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
         }
-        return BadRequest();
-    }
 
-    [HttpGet("{id}")]
-    public override async Task<IActionResult> GetAsync(int id)
-    {
-        var response = await _statesUnitOfWork.GetAsync(id);
-        if (response.WasSuccess)
+        [HttpGet]
+        public override async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
         {
-            return Ok(response.Result);
+            var response = await _statesUnitOfWork.GetAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
         }
-        return NotFound(response.Message);
+
+        [HttpGet("totalPages")]
+        public override async Task<IActionResult> GetPagesAsync([FromQuery] PaginationDTO pagination)
+        {
+            var action = await _statesUnitOfWork.GetTotalPagesAsync(pagination);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("{id}")]
+        public override async Task<IActionResult> GetAsync(int id)
+        {
+            var response = await _statesUnitOfWork.GetAsync(id);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return NotFound(response.Message);
+        }
     }
 }

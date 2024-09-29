@@ -6,84 +6,86 @@ using VendaPues.Shared.DTOs;
 using VendaPues.Shared.Entities;
 using VendaPues.Shared.Responses;
 
-namespace VendaPues.Backend.Repositories.Implementations;
-
-public class SuppliersRepository : GenericRepository<Supplier>, ISuppliersRepository
+namespace VendaPues.Backend.Repositories.Implementations
 {
-    private readonly DataContext _context;
-
-    public SuppliersRepository(DataContext context) : base(context)
+    public class SuppliersRepository : GenericRepository<Supplier>, ISuppliersRepository
     {
-        _context = context;
-    }
+        private readonly DataContext _context;
 
-    public override async Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination)
-    {
-        var queryable = _context.Suppliers.AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(pagination.Filter))
+        public SuppliersRepository(DataContext context) : base(context)
         {
-            queryable = queryable.Where(x => x.SupplierName.ToLower().Contains(pagination.Filter.ToLower()));
+            _context = context;
         }
 
-        int recordsNumber = await queryable.CountAsync();
-
-        return new ActionResponse<int>
+        public override async Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination)
         {
-            WasSuccess = true,
-            Result = recordsNumber
-        };
-    }
+            var queryable = _context.Suppliers.AsQueryable();
 
-    public async Task<IEnumerable<Supplier>> GetComboAsync()
-    {
-        return await _context.Suppliers
-            .OrderBy(c => c.SupplierName)
-            .ToListAsync();
-    }
-
-    public override async Task<ActionResponse<Supplier>> GetAsync(int id)
-    {
-        var supplier = await _context.Suppliers
-            .Include(s => s.City!)
-            .ThenInclude(c => c.State!)
-            .ThenInclude(s => s.Country)
-            .FirstOrDefaultAsync(x => x.Id == id);
-        if (supplier == null)
-        {
-            return new ActionResponse<Supplier>
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
-                WasSuccess = false,
-                Message = "Registro no encontrado"
+                queryable = queryable.Where(x => x.SupplierName.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            int recordsNumber = await queryable.CountAsync();
+
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = recordsNumber
             };
         }
 
-        return new ActionResponse<Supplier>
+        public async Task<IEnumerable<Supplier>> GetComboAsync()
         {
-            WasSuccess = true,
-            Result = supplier
-        };
-    }
-
-    public override async Task<ActionResponse<IEnumerable<Supplier>>> GetAsync(PaginationDTO pagination)
-    {
-        var queryable = _context.Suppliers.AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(pagination.Filter))
-        {
-            queryable = queryable.Where(x => x.SupplierName.ToLower().Contains(pagination.Filter.ToLower()));
+            return await _context.Suppliers
+                .OrderBy(c => c.SupplierName)
+                .ToListAsync();
         }
 
-        return new ActionResponse<IEnumerable<Supplier>>
+        public override async Task<ActionResponse<Supplier>> GetAsync(int id)
         {
-            WasSuccess = true,
-            Result = await queryable
+            var supplier = await _context.Suppliers
                 .Include(s => s.City!)
                 .ThenInclude(c => c.State!)
                 .ThenInclude(s => s.Country)
-                .OrderBy(x => x.SupplierName)
-                .Paginate(pagination)
-                .ToListAsync()
-        };
+                .FirstOrDefaultAsync(x => x.Id == id);
+            if (supplier == null)
+            {
+                return new ActionResponse<Supplier>
+                {
+                    WasSuccess = false,
+                    Message = "Registro no encontrado"
+                };
+            }
+
+            return new ActionResponse<Supplier>
+            {
+                WasSuccess = true,
+                Result = supplier
+            };
+        }
+
+
+        public override async Task<ActionResponse<IEnumerable<Supplier>>> GetAsync(PaginationDTO pagination)
+        {
+            var queryable = _context.Suppliers.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.SupplierName.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            return new ActionResponse<IEnumerable<Supplier>>
+            {
+                WasSuccess = true,
+                Result = await queryable
+                    .Include(s => s.City!)
+                    .ThenInclude(c => c.State!)
+                    .ThenInclude(s => s.Country)
+                    .OrderBy(x => x.SupplierName)
+                    .Paginate(pagination)
+                    .ToListAsync()
+            };
+        }
     }
 }

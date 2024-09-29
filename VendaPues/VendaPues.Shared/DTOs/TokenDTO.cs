@@ -1,8 +1,9 @@
-﻿namespace VendaPues.Shared.DTOs;
-
-public class TokenDTO
+﻿namespace VendaPues.Shared.DTOs
 {
-    public string Token { get; set; } = null!;
+    public class TokenDTO
+    {
+        public string Token { get; set; } = null!;
 
-    public DateTime Expiration { get; set; }
+        public DateTime Expiration { get; set; }
+    }
 }

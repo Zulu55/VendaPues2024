@@ -4,99 +4,101 @@ using VendaPues.Shared.Entities;
 using VendaPues.Shared.Enums;
 using VendaPues.Shared.Responses;
 
-namespace VendaPues.Backend.Helpers;
-
-public class PurchaseHelper : IPurchaseHelper
+namespace VendaPues.Backend.Helpers
 {
-    private readonly IProductsUnitOfWork _productsUnitOfWork;
-    private readonly IKardexUnitOfWork _kardexUnitOfWork;
-    private readonly IPurchaseUnitOfWork _purchaseUnitOfWork;
-    private readonly ISuppliersUnitOfWork _suppliersUnitOfWork;
-    private readonly ITemporalPurchasesUnitOfWork _temporalPurchasesUnitOfWork;
-
-    public PurchaseHelper(IProductsUnitOfWork productsUnitOfWork, IKardexUnitOfWork kardexUnitOfWork, IPurchaseUnitOfWork purchaseUnitOfWork, ISuppliersUnitOfWork suppliersUnitOfWork, ITemporalPurchasesUnitOfWork temporalPurchasesUnitOfWork)
+    public class PurchaseHelper : IPurchaseHelper
     {
-        _productsUnitOfWork = productsUnitOfWork;
-        _kardexUnitOfWork = kardexUnitOfWork;
-        _purchaseUnitOfWork = purchaseUnitOfWork;
-        _suppliersUnitOfWork = suppliersUnitOfWork;
-        _temporalPurchasesUnitOfWork = temporalPurchasesUnitOfWork;
-    }
+        private readonly IProductsUnitOfWork _productsUnitOfWork;
+        private readonly IKardexUnitOfWork _kardexUnitOfWork;
+        private readonly IPurchaseUnitOfWork _purchaseUnitOfWork;
+        private readonly ISuppliersUnitOfWork _suppliersUnitOfWork;
+        private readonly ITemporalPurchasesUnitOfWork _temporalPurchasesUnitOfWork;
 
-    public async Task<ActionResponse<bool>> ProcessPurchaseAsync(PurchaseDTO purchaseDTO, string email)
-    {
-        if (purchaseDTO.PurchaseDetails == null || purchaseDTO.PurchaseDetails.Count == 0)
+        public PurchaseHelper(IProductsUnitOfWork productsUnitOfWork, IKardexUnitOfWork kardexUnitOfWork, IPurchaseUnitOfWork purchaseUnitOfWork, ISuppliersUnitOfWork suppliersUnitOfWork, ITemporalPurchasesUnitOfWork temporalPurchasesUnitOfWork)
         {
-            return new ActionResponse<bool>
-            {
-                Message = "No details in purchase.",
-            };
+            _productsUnitOfWork = productsUnitOfWork;
+            _kardexUnitOfWork = kardexUnitOfWork;
+            _purchaseUnitOfWork = purchaseUnitOfWork;
+            _suppliersUnitOfWork = suppliersUnitOfWork;
+            _temporalPurchasesUnitOfWork = temporalPurchasesUnitOfWork;
         }
 
-        var responseSupplier = await _suppliersUnitOfWork.GetAsync(purchaseDTO.SupplierId);
-        if (!responseSupplier.WasSuccess)
+        public async Task<ActionResponse<bool>> ProcessPurchaseAsync(PurchaseDTO purchaseDTO, string email)
         {
-            return new ActionResponse<bool>
-            {
-                Message = responseSupplier.Message,
-            };
-        }
-
-        var purchase = new Purchase
-        {
-            Date = purchaseDTO.Date,
-            Supplier = responseSupplier.Result,
-            Remarks = purchaseDTO.Remarks,
-            PurchaseDetails = []
-        };
-
-        foreach (var purchaseDetail in purchaseDTO.PurchaseDetails)
-        {
-            var productResponse = await _productsUnitOfWork.GetAsync(purchaseDetail.ProductId);
-            if (!productResponse.WasSuccess)
+            if (purchaseDTO.PurchaseDetails == null || purchaseDTO.PurchaseDetails.Count == 0)
             {
                 return new ActionResponse<bool>
                 {
-                    Message = $"Product with Id: {purchaseDetail.ProductId}, not found.",
+                    Message = "No details in purchase.",
                 };
             }
 
-            purchase.PurchaseDetails.Add(new PurchaseDetail
+            var responseSupplier = await _suppliersUnitOfWork.GetAsync(purchaseDTO.SupplierId);
+            if (!responseSupplier.WasSuccess)
             {
-                Cost = purchaseDetail.Cost,
-                Description = productResponse.Result!.Description,
-                Image = productResponse.Result!.MainImage,
-                Name = productResponse.Result!.Name,
-                Product = productResponse.Result,
-                Quantity = purchaseDetail.Quantity,
-                Remarks = purchaseDetail?.Remarks,
-            });
+                return new ActionResponse<bool>
+                {
+                    Message = responseSupplier.Message,
+                };
+            }
 
-            var kardexDTO = new KardexDTO
+            var purchase = new Purchase
             {
-                Date = purchase.Date,
-                ProductId = purchaseDetail!.ProductId,
-                KardexType = KardexType.Purchase,
-                Cost = purchaseDetail.Cost,
-                Quantity = purchaseDetail.Quantity
+                Date = purchaseDTO.Date,
+                Supplier = responseSupplier.Result,
+                Remarks = purchaseDTO.Remarks,
+                PurchaseDetails = []
             };
 
-            await _kardexUnitOfWork.AddAsync(kardexDTO);
-        }
+            foreach (var purchaseDetail in purchaseDTO.PurchaseDetails)
+            {
+                var productResponse = await _productsUnitOfWork.GetAsync(purchaseDetail.ProductId);
+                if (!productResponse.WasSuccess)
+                {
+                    return new ActionResponse<bool>
+                    {
+                        Message = $"Product with Id: {purchaseDetail.ProductId}, not found.",
+                    };
+                }
 
-        var responsePurchase = await _purchaseUnitOfWork.AddAsync(purchase);
-        if (!responsePurchase.WasSuccess)
-        {
+                purchase.PurchaseDetails.Add(new PurchaseDetail
+                {
+                    Cost = purchaseDetail.Cost,
+                    Description = productResponse.Result!.Description,
+                    Image = productResponse.Result!.MainImage,
+                    Name = productResponse.Result!.Name,
+                    Product = productResponse.Result,
+                    Quantity = purchaseDetail.Quantity,
+                    Remarks = purchaseDetail?.Remarks,
+                });
+
+                var kardexDTO = new KardexDTO
+                {
+                    Date = purchase.Date,
+                    ProductId = purchaseDetail!.ProductId,
+                    KardexType = KardexType.Purchase,
+                    Cost = purchaseDetail.Cost,
+                    Quantity = purchaseDetail.Quantity
+                };
+
+                await _kardexUnitOfWork.AddAsync(kardexDTO);
+            }
+
+
+            var responsePurchase = await _purchaseUnitOfWork.AddAsync(purchase);
+            if (!responsePurchase.WasSuccess)
+            {
+                return new ActionResponse<bool>
+                {
+                    Message = responsePurchase.Message,
+                };
+            }
+
+            await _temporalPurchasesUnitOfWork.DeleteAsync(email);
             return new ActionResponse<bool>
             {
-                Message = responsePurchase.Message,
+                Result = true,
             };
         }
-
-        await _temporalPurchasesUnitOfWork.DeleteAsync(email);
-        return new ActionResponse<bool>
-        {
-            Result = true,
-        };
     }
 }

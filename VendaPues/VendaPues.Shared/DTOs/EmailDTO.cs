@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace VendaPues.Shared.DTOs;
-
-public class EmailDTO
+namespace VendaPues.Shared.DTOs
 {
-    [Display(Name = "Email")]
-    [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-    [EmailAddress(ErrorMessage = "Debes ingresar un correo válido.")]
-    public string Email { get; set; } = null!;
+    public class EmailDTO
+    {
+        [Display(Name = "Email")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [EmailAddress(ErrorMessage = "Debes ingresar un correo válido.")]
+        public string Email { get; set; } = null!;
+    }
 }

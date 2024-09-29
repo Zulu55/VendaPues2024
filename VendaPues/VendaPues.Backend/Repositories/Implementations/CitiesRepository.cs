@@ -6,85 +6,86 @@ using VendaPues.Shared.DTOs;
 using VendaPues.Shared.Entities;
 using VendaPues.Shared.Responses;
 
-namespace VendaPues.Backend.Repositories.Implementations;
-
-public class CitiesRepository : GenericRepository<City>, ICitiesRepository
+namespace VendaPues.Backend.Repositories.Implementations
 {
-    private readonly DataContext _context;
-
-    public CitiesRepository(DataContext context) : base(context)
+    public class CitiesRepository : GenericRepository<City>, ICitiesRepository
     {
-        _context = context;
-    }
+        private readonly DataContext _context;
 
-    public override async Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination)
-    {
-        var queryable = _context.Cities.AsQueryable();
-        if (pagination.Id != 0)
+        public CitiesRepository(DataContext context) : base(context)
         {
-            queryable = queryable.Where(x => x.State!.Id == pagination.Id);
+            _context = context;
         }
 
-        if (!string.IsNullOrWhiteSpace(pagination.Filter))
+        public override async Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination)
         {
-            queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            var queryable = _context.Cities.AsQueryable();
+            if (pagination.Id != 0)
+            {
+                queryable = queryable.Where(x => x.State!.Id == pagination.Id);
+            }
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            int recordsNumber = await queryable.CountAsync();
+
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = recordsNumber
+            };
         }
 
-        int recordsNumber = await queryable.CountAsync();
-
-        return new ActionResponse<int>
+        public async Task<IEnumerable<City>> GetComboAsync(int stateId)
         {
-            WasSuccess = true,
-            Result = recordsNumber
-        };
-    }
-
-    public async Task<IEnumerable<City>> GetComboAsync(int stateId)
-    {
-        return await _context.Cities
-            .Where(c => c.StateId == stateId)
-            .OrderBy(c => c.Name)
-            .ToListAsync();
-    }
-
-    public override async Task<ActionResponse<IEnumerable<City>>> GetAsync(PaginationDTO pagination)
-    {
-        var queryable = _context.Cities
-            .Where(x => x.State!.Id == pagination.Id)
-            .AsQueryable();
-
-        if (!string.IsNullOrWhiteSpace(pagination.Filter))
-        {
-            queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            return await _context.Cities
+                .Where(c => c.StateId == stateId)
+                .OrderBy(c => c.Name)
+                .ToListAsync();
         }
 
-        return new ActionResponse<IEnumerable<City>>
+        public override async Task<ActionResponse<IEnumerable<City>>> GetAsync(PaginationDTO pagination)
         {
-            WasSuccess = true,
-            Result = await queryable
-                .OrderBy(x => x.Name)
-                .Paginate(pagination)
-                .ToListAsync()
-        };
-    }
+            var queryable = _context.Cities
+                .Where(x => x.State!.Id == pagination.Id)
+                .AsQueryable();
 
-    public override async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
-    {
-        var queryable = _context.Cities
-            .Where(x => x.State!.Id == pagination.Id)
-            .AsQueryable();
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
 
-        if (!string.IsNullOrWhiteSpace(pagination.Filter))
-        {
-            queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            return new ActionResponse<IEnumerable<City>>
+            {
+                WasSuccess = true,
+                Result = await queryable
+                    .OrderBy(x => x.Name)
+                    .Paginate(pagination)
+                    .ToListAsync()
+            };
         }
 
-        double count = await queryable.CountAsync();
-        int totalPages = (int)Math.Ceiling(count / pagination.RecordsNumber);
-        return new ActionResponse<int>
+        public override async Task<ActionResponse<int>> GetTotalPagesAsync(PaginationDTO pagination)
         {
-            WasSuccess = true,
-            Result = totalPages
-        };
+            var queryable = _context.Cities
+                .Where(x => x.State!.Id == pagination.Id)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            double count = await queryable.CountAsync();
+            int totalPages = (int)Math.Ceiling(count / pagination.RecordsNumber);
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = totalPages
+            };
+        }
     }
 }

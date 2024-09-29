@@ -1,7 +1,8 @@
-﻿namespace VendaPues.Shared.DTOs;
-
-public class KeyValueDTO
+﻿namespace VendaPues.Shared.DTOs
 {
-    public int Key { get; set; }
-    public string Value { get; set; } = null!;
+    public class KeyValueDTO
+    {
+        public int Key { get; set; }
+        public string Value { get; set; } = null!;
+    }
 }

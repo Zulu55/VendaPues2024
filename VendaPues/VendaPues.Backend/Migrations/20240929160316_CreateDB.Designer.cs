@@ -12,8 +12,8 @@ using VendaPues.Backend.Data;
 namespace VendaPues.Backend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240929011656_DBCreate")]
-    partial class DBCreate
+    [Migration("20240929160316_CreateDB")]
+    partial class CreateDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

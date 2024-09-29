@@ -2,13 +2,14 @@
 using VendaPues.Shared.Entities;
 using VendaPues.Shared.Responses;
 
-namespace VendaPues.Backend.Repositories.Interfaces;
-
-public interface IBanksRepository
+namespace VendaPues.Backend.Repositories.Interfaces
 {
-    Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination);
+    public interface IBanksRepository
+    {
+        Task<ActionResponse<int>> GetRecordsNumberAsync(PaginationDTO pagination);
 
-    Task<ActionResponse<IEnumerable<Bank>>> GetAsync(PaginationDTO pagination);
+        Task<ActionResponse<IEnumerable<Bank>>> GetAsync(PaginationDTO pagination);
 
-    Task<IEnumerable<Bank>> GetComboAsync();
+        Task<IEnumerable<Bank>> GetComboAsync();
+    }
 }

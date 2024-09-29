@@ -1,53 +1,55 @@
-﻿using MimeKit;
+﻿using MailKit.Net.Smtp;
+using MimeKit;
 using VendaPues.Shared.Responses;
 
-namespace VendaPues.Backend.Helpers;
-
-public class MailHelper : IMailHelper
+namespace VendaPues.Backend.Helpers
 {
-    private readonly IConfiguration _configuration;
-    private readonly ISmtpClient _smtpClient;
-
-    public MailHelper(IConfiguration configuration, ISmtpClient smtpClient)
+    public class MailHelper : IMailHelper
     {
-        _configuration = configuration;
-        _smtpClient = smtpClient;
-    }
+        private readonly IConfiguration _configuration;
+        private readonly ISmtpClient _smtpClient;
 
-    public ActionResponse<string> SendMail(string toName, string toEmail, string subject, string body)
-    {
-        try
+        public MailHelper(IConfiguration configuration, ISmtpClient smtpClient)
         {
-            var from = _configuration["Mail:From"];
-            var name = _configuration["Mail:Name"];
-            var smtp = _configuration["Mail:Smtp"];
-            var port = _configuration["Mail:Port"];
-            var password = _configuration["Mail:Password"];
-
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(name, from));
-            message.To.Add(new MailboxAddress(toName, toEmail));
-            message.Subject = subject;
-            BodyBuilder bodyBuilder = new BodyBuilder
-            {
-                HtmlBody = body
-            };
-            message.Body = bodyBuilder.ToMessageBody();
-
-            _smtpClient.Connect(smtp!, int.Parse(port!), false);
-            _smtpClient.Authenticate(from!, password!);
-            _smtpClient.Send(message);
-            _smtpClient.Disconnect(true);
-
-            return new ActionResponse<string> { WasSuccess = true };
+            _configuration = configuration;
+            _smtpClient = smtpClient;
         }
-        catch (Exception ex)
+
+        public ActionResponse<string> SendMail(string toName, string toEmail, string subject, string body)
         {
-            return new ActionResponse<string>
+            try
             {
-                WasSuccess = false,
-                Message = ex.Message,
-            };
+                var from = _configuration["Mail:From"];
+                var name = _configuration["Mail:Name"];
+                var smtp = _configuration["Mail:Smtp"];
+                var port = _configuration["Mail:Port"];
+                var password = _configuration["Mail:Password"];
+
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress(name, from));
+                message.To.Add(new MailboxAddress(toName, toEmail));
+                message.Subject = subject;
+                BodyBuilder bodyBuilder = new BodyBuilder
+                {
+                    HtmlBody = body
+                };
+                message.Body = bodyBuilder.ToMessageBody();
+
+                _smtpClient.Connect(smtp!, int.Parse(port!), false);
+                _smtpClient.Authenticate(from!, password!);
+                _smtpClient.Send(message);
+                _smtpClient.Disconnect(true);
+
+                return new ActionResponse<string> { WasSuccess = true };
+            }
+            catch (Exception ex)
+            {
+                return new ActionResponse<string>
+                {
+                    WasSuccess = false,
+                    Message = ex.Message,
+                };
+            }
         }
     }
 }
